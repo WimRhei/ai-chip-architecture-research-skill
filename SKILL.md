@@ -30,6 +30,8 @@ Use sources in this order:
 
 Trace every nontrivial fact to a source. Separate confirmed facts, derived calculations and evaluation. Label architectural inference explicitly. Omit unsupported implementation guesses and marketing comparisons. Verify current generations and product status live when practical.
 
+Evidence discipline should reduce claims, not produce defensive prose. State confirmed facts directly. Omit uncertain details that do not change the architectural conclusion. When uncertainty matters, qualify the conclusion once or consolidate the gap in the scope, judgment or reference section; do not append source-history explanations and disclaimers throughout the body.
+
 Open software does not prove open hardware. A supported operator does not prove efficient execution. Peak throughput does not prove end-to-end performance.
 
 ## Default deliverable

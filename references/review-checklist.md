@@ -57,6 +57,7 @@ Run this review after drafting.
 - The causal order is scope → hardware → execution → dynamics → scaling → software → comparison → judgment.
 - Vendor-specific concepts are defined once.
 - Repetition, marketing language and speculative implementation details are removed.
+- Source lineage and uncertainty caveats appear only where they change the conclusion; defensive explanations are removed.
 - “不是……而是……” rhetoric is absent.
 - One sentence is not expanded into a paragraph without added information.
 - Tables remain readable and use consistent terminology.

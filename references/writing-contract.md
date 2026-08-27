@@ -160,6 +160,8 @@ Group primary sources by topic. Prefer stable official documentation and source-
 
 - Lead with the conclusion, then the mechanism.
 - One sentence per claim; one term per concept.
+- State established facts directly; do not defend every sentence with its source history.
+- Omit inconsequential uncertainty; consolidate material limitations instead of repeating disclaimers.
 - Delete duplicated definitions, mechanisms and judgments.
 - Avoid “不是……而是……” and similar rhetorical contrast.
 - Avoid promotional adjectives and vague claims such as “efficient” or “scalable”.
