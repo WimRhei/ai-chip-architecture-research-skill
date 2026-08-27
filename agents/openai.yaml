@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Chip Architecture Research"
+  short_description: "Create source-grounded AI chip architecture reports"
+  default_prompt: "Use $ai-chip-architecture-research to create a complete Markdown architecture report for a named AI chip generation."
