@@ -1,188 +1,70 @@
-# Architecture research and writing contract
+# Architecture report writing contract
 
-Use this as the master prompt for a company-specific AI-chip architecture document.
+## Organizing principle
 
-## Deliverable
+Lead with the architectural conclusion and explain the shortest causal chain that supports it. A complete report covers the relevant mechanisms, not a fixed number of sections. Combine or omit topics that add no evidence or architectural consequence; do not pad undocumented areas.
 
-Produce a complete standalone Markdown report in the requested file. If no file is named, create `<Company or Chip>架构.md` in the current project. Research notes and evidence maps are internal artifacts; completion requires the report itself.
+Use the following sequence as a default. For a CPU or system question, introduce the workload and baseline differences before component details when that makes the argument clearer.
 
-In an Obsidian vault with an established wide-note convention, apply that frontmatter. Use sourced existing diagrams through relative local paths and keep their original URLs in the references. The document must stand alone without chat context.
+## 1. Scope, bottleneck and central bet
 
-## Objective
+State the chip/generation, product status and research date. Define the chip and system boundaries.
 
-Research one concrete chip generation. Explain:
+Explain the target workload, limiting resource or dependency, and what the design assumes about regularity, locality, concurrency or reuse. Give the central architectural choice in one sentence, followed by its main cost. Introduce vendor terms only when needed for the mechanism.
 
-1. what hardware exists;
-2. how software maps and executes work;
-3. where data resides and how it moves;
-4. which complexity is handled by hardware, compiler, runtime or programmer;
-5. what workload assumptions the design makes;
-6. which costs appear when those assumptions fail;
-7. the essential differences from a contemporary GPU.
+## 2. Key specifications and hardware
 
-The reader has computer-architecture fundamentals. Explain vendor-specific concepts and non-obvious mechanisms only.
+Use a compact specification table with relevant disclosed values: process/area, compute resources, numerical formats, SRAM, external memory, interconnect and power. Label the unit of scope; distinguish physical, enabled and software-visible resources. Consolidate consequential unknowns once.
 
-## Research boundary
+Describe the actual paths:
 
-- State the exact chip generation, release status and research date.
-- Define availability using general availability, ordering, delivery or named deployment evidence; distinguish launch announcements and promised shipping windows.
-- Distinguish die, package, board, server, rack and software stack.
-- Distinguish physical resources, enabled product resources and software-visible resources.
-- Keep other generations in a short lineage section or an explicit comparison.
-- Inherit an older mechanism only with explicit family continuity or current-generation corroboration; label it and never inherit quantitative specifications.
-- Record unavailable die area, PPA, latency or deployment evidence as unavailable.
+- **Compute:** matrix/vector/scalar units, hardware operation granularity versus software tile, and precision/conversion responsibilities. Separate control processors from compute datapaths.
+- **Storage:** registers, SRAM/cache and external memory; who manages placement; tensor/tile/page/shard layout; local versus remote access, copying and coherence.
+- **Communication:** endpoints, topology and transfer mechanisms; address generation, routing, multicast/collectives and completion signaling. Separate protocol, physical link and connector.
 
-## Causal organization
+Define software-managed SRAM as such even if the vendor calls it “L1”. Unified addressing or coherence does not erase separate memory pools, access distance or locality costs. A logical block diagram does not establish physical layout or area proportions.
 
-Use this order unless the architecture requires a small adjustment.
+## 3. Execution: placement, progress and control
 
-### 0. Scope and thesis
+Explain the path from framework/compiler to executable, launch and completion. Define vendor Program, Kernel or configuration terms once and state what users can actually program.
 
-- Define the chip, generation and product studied.
-- Give one sentence for the design philosophy.
-- Give one sentence for the central bet.
-- Define vendor-specific terms needed to read the rest.
+Separate three decisions:
 
-### 1. Key specifications
+| Decision | Questions |
+|---|---|
+| Placement | Who assigns computation, data and communication paths? At compile time, launch or runtime? |
+| Progress | What permits execution: a scheduled cycle, ready operands, buffer space, an event or a barrier? |
+| Adaptation | Can execution change addresses/loop counts, select ready instructions, or reassign tasks/resources? |
 
-Use one compact table. Include available and relevant values:
+A static spatial mapping can still advance dynamically. A data-dependent address does not imply task rescheduling. Specify the affected level instead of calling the whole chip “static” or “dynamic”.
 
-- process, die area and transistor count;
-- compute-core topology and enabled count;
-- matrix/vector/control resources;
-- on-chip SRAM capacity and organization;
-- external memory capacity and bandwidth;
-- on-chip and chip-to-chip interconnect;
-- supported numerical formats;
-- board power only when it helps interpret the architecture.
+Use one sourced operation or workload phase to connect **initial data → movement/layout → compute → synchronization → output**. Name the controlling component and release event at each boundary. Explain what stalls and how backpressure propagates when a stage is slower. Mark an illustrative mapping as an example if the vendor has not documented that exact path.
 
-For every bandwidth, state per-link or aggregate, per-direction or bidirectional, payload or signaling rate. Use `B/s` for data bandwidth. Distinguish MAC from FLOP and measured from peak.
+For latency hiding, identify the independent work that overlaps and the wait it covers. Threads, OoO, prefetch and software pipelines cannot break true dependencies. Distinguish shortening the critical path from filling otherwise idle time; fewer copies, launches or barriers require an explicit before/after path.
 
-### 2. Static hardware
+## 4. Dynamics, numerical formats and scaling
 
-Describe physical mechanisms before execution.
+Expand these only where they change the conclusion:
 
-#### Compute
+- **Dynamics/sparsity:** trace an address, shape, mask or routing decision to the executing mechanism. State remaining costs: padding, gather/scatter, reordering, synchronization and load imbalance. Distinguish operator support, hardware skipping and measured benefit.
+- **Formats:** distinguish storage, input, multiplier mode and accumulation. Explain unusual bit/byte organization with a small example when necessary; software tile width is not hardware multiplier width.
+- **Scaling:** distinguish die, board, node and rack links. Connect sharding and collectives to topology, bandwidth, latency and memory semantics. Identify which communication becomes limiting and why; link bandwidth alone does not establish scaling efficiency.
 
-- Matrix, vector, scalar and special-function datapaths.
-- Hardware operation granularity and software programming granularity.
-- Precision, accumulation, conversion, pack/unpack and quantization ownership.
-- Keep control processors out of the compute-datapath description.
+## 5. Baseline differences and judgment
 
-#### Storage and layout
+Choose a named baseline from the same product period and comparable workload/system level. Label a present-day comparison to older hardware explicitly.
 
-- Registers, local SRAM, shared cache and external memory actually present.
-- Hardware-managed and software-managed levels.
-- Tensor, tile, page, shard or vendor layout concepts.
-- Local and remote access semantics; coherence and copying behavior.
+Use a short table: **dimension | baseline mechanism | target change | consequence/cost**. Keep only differences that explain the design. Distinguish existing capabilities, changed resource proportions and custom mechanisms. For each major choice, explain where complexity moved and what happens when its workload assumption fails.
 
-#### Communication
+Conclude with the supported benefit, limiting cost and conditions of applicability. Separate architecture effects from compiler/kernel improvements, reused hardware standards from software ecosystems, and vendor results from independent evidence. Do not declare a winner without comparable measurements. Keep research opportunities or user hypotheses separate from the architecture judgment.
 
-- On-chip topology, endpoints and routing responsibility.
-- Read, write, multicast, collective and synchronization mechanisms.
-- Separate logical protocol, physical link and connector.
-- State who chooses addresses and paths, and who transfers packets.
+## Quantitative and source rules
 
-### 3. Dynamic execution
+- Bandwidth: specify per-link/aggregate, direction and payload/signaling where known; use `B/s` for data bandwidth. Do not invent an undisclosed convention.
+- Compute: distinguish MAC/FLOP, precision, sparsity and peak/measured throughput. For derived values, show inputs and assumptions; multiple feasible configurations do not reveal the actual microarchitecture.
+- Benchmarks: retain the model/workload, batch/concurrency, sequence lengths, precision, system size and metric definition needed to interpret the result, where disclosed. Distinguish token latency, request latency, throughput and power efficiency; local gains do not establish whole-system gains.
+- Sources: keep a claim-to-source map during research, including status and generation/system scope. Group final references by topic when useful. Patents, third-party reconstructions and user annotations must retain their evidence status.
 
-Explain who runs what and when.
+## Concise writing
 
-- Define Program, graph, kernel, command queue and runtime using the vendor's actual model.
-- Identify which controller receives each kernel or command stream.
-- Explain mapping, launch, local progress, synchronization and completion.
-- Explain latency hiding: threads, scoreboarding, events, buffering, software pipeline or static schedule.
-- Use one evidence-backed end-to-end operation to connect layout, movement, computation, synchronization and output.
-
-Always answer:
-
-- Who decides the work?
-- When is that decision made?
-- Where is the data at each stage?
-- What event allows the next stage to proceed?
-- What stalls when one stage is slower?
-
-### 4. Numerical formats, sparsity and runtime dynamics
-
-- Separate storage format, input format, multiplier mode and accumulation precision.
-- Explain unusual formats with one numerical or bit-level example when needed.
-- State hardware boundaries first.
-- Explain how software handles dynamic addresses, lengths, indices, routing and load imbalance.
-- Separate operator availability from hardware skipping, measured speedup and end-to-end benefit.
-
-### 5. Multi-chip scaling
-
-- Separate die-to-die, board-level, node-level and rack-level links.
-- Give confirmed bandwidth and topology.
-- Explain sharding, collectives, synchronization, memory semantics and coherence.
-- Identify scale-up bottlenecks without inferring performance from bandwidth alone.
-
-### 6. Software stack and programmability
-
-Show one consistent path from framework graph to executable work:
-
-`Framework → graph IR/compiler → operator/runtime → kernel/programming layer → hardware`
-
-Define each vendor component once. State what users can program and which layer resembles a GPU framework backend, library, runtime or kernel API. Do not equate layers merely because names sound similar.
-
-### 7. GPU differences and design tradeoffs
-
-Use one table with `dimension | GPU | target chip | consequence`.
-
-State the comparator before the table. Default to a shipping GPU from the same product period and comparable system/workload level. Use a current GPU only for a clearly labeled present-day comparison. Do not mix chip, board and rack metrics.
-
-Compare only essential differences across:
-
-- compute granularity;
-- storage and data placement;
-- communication;
-- execution and scheduling;
-- latency hiding;
-- numerical formats;
-- sparsity and runtime dynamics;
-- multi-chip scaling;
-- software programmability;
-- target workloads and system constraints.
-
-For each difference, identify where complexity moved. Avoid declaring a winner without comparable measurements.
-
-### 8. Reused ecosystem and system judgment
-
-- Separate reused hardware standards from reused software ecosystems.
-- Identify the vendor's genuinely custom components.
-- Give a small number of evidence-bounded system judgments.
-- State what remains unproven: PPA, utilization, end-to-end latency, scale, reliability, multi-tenancy or deployment maturity.
-
-### 9. References
-
-Group primary sources by topic. Prefer stable official documentation and source-code paths. Include independent analysis only where it adds evidence or criticism.
-
-## Writing rules
-
-- Lead with the conclusion, then the mechanism.
-- One sentence per claim; one term per concept.
-- State established facts directly; do not defend every sentence with its source history.
-- Omit inconsequential uncertainty; consolidate material limitations instead of repeating disclaimers.
-- Delete duplicated definitions, mechanisms and judgments.
-- Avoid “不是……而是……” and similar rhetorical contrast.
-- Avoid promotional adjectives and vague claims such as “efficient” or “scalable”.
-- Define abbreviations and vendor terms at first use.
-- Keep chip, board, connector, protocol, runtime and compiler layers distinct.
-- Use concrete verbs: map, issue, route, wait, copy, compute and synchronize.
-- Prefer a compact table when it removes repeated prose.
-- Use an example only when it connects several mechanisms or resolves ambiguity.
-- If a vendor calls software-managed scratchpad “L1”, define it once and then call it `SRAM`; preserve `cache` only when cache semantics exist.
-- Put sources in the final reference section when the document style requires source-free prose; never lose claim-to-source traceability.
-- Finish the requested file before returning a conversational summary.
-
-## Evidence labels for internal research
-
-Maintain a private evidence map while drafting:
-
-| Claim | Status | Source | Scope |
-|---|---|---|---|
-| Exact documented fact | confirmed | primary URL/path | chip/board/system |
-| Arithmetic from facts | derived | inputs and formula | stated assumptions |
-| Architectural interpretation | inference | supporting facts | uncertainty |
-| Comparative judgment | evaluation | comparable evidence | limits |
-
-Only the final prose and requested references belong in the user document.
+Use concrete verbs and define each concept once. Prefer a table or short data path when it removes repeated prose. Keep vendor-specific mechanisms and causal costs; omit textbook explanations, exhaustive glossaries, promotional adjectives and “不是……而是……” rhetoric. Put each fact in one main location. A short report must still explain how the chip executes work.

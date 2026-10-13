@@ -1,64 +1,34 @@
-# Final architecture-document review
+# Architecture report review
 
-Run this review after drafting.
+Check the final report against these questions; correct gaps without adding a separate validation artifact.
 
-## Deliverable
+## Scope and evidence
 
-- The requested Markdown report exists at the resolved path.
-- The report is complete and understandable without chat history.
-- Research notes or chat summaries have not replaced the report.
-- Local frontmatter, image paths and repository conventions are preserved.
+- Is the requested report/edit complete, standalone and consistent with local frontmatter and image paths?
+- Are generation, product status, date and chip/system scope clear? Are inherited mechanisms supported and labeled?
+- Does every nontrivial fact map to a source for the studied implementation? Are calculations, reconstructions and user hypotheses distinct from confirmed hardware?
+- Are consequential unknowns stated once, without guesses or repeated caveats?
 
-## Scope
+## Architectural explanation
 
-- Exact chip generation and research date are clear.
-- Availability is supported by ordering, delivery, general-availability or named-deployment evidence.
-- Shipping, announced and legacy products are separated.
-- Chip, board, system and software claims are not mixed.
-- Data from another generation is explicitly labeled.
-- Older-generation mechanisms have continuity evidence; quantitative specifications are not inherited.
+- Does the report connect workload bottleneck → design choice → benefit → cost/failure condition?
+- Are compute granularity, storage/layout and communication paths concrete?
+- Are placement, execution progress and runtime adaptation distinguished, with hardware/compiler/runtime/programmer responsibilities?
+- Does one consistent execution path identify data location, controlling components, synchronization and stalls?
+- Does latency hiding name independent work while preserving true dependencies?
+- Where relevant, are dynamicity/sparsity costs, numerical paths and multi-chip communication limits explained?
 
-## Mechanism
+## Comparison and quantities
 
-- Compute, storage, layout and communication hardware are each identified.
-- Execution explains controller, mapping, launch, progress, synchronization and stall behavior.
-- Hardware and software responsibilities are explicit.
-- The end-to-end example agrees with the component descriptions.
-- Dynamicity explains both support mechanism and residual cost.
-
-## Quantitative data
-
-- Physical, enabled and software-visible counts are distinguished.
-- Bandwidth states direction, aggregation level and byte/bit units.
-- Peak, measured and derived values are labeled.
-- Precision names, multiplier mode and accumulation precision are not conflated.
-- Unknown die area, PPA or latency remains unknown.
-
-## Evidence
-
-- Every nontrivial fact maps to a source.
-- Official documentation or code supports implementation claims.
-- Independent sources are labeled and used only where needed.
-- Open software is not described as open hardware.
-- Operator support is not described as proven efficiency.
-- No architectural drawing is presented as physical layout without evidence.
-
-## Comparison and judgment
-
-- GPU comparison uses the same system level and metric definition.
-- The GPU comparator and comparison date are explicit.
-- Each difference states the resulting tradeoff or moved complexity.
-- Advantages have comparable measurements or qualified wording.
-- Missing third-party and deployment evidence is stated.
-- Current-product conclusions do not rely on obsolete generations.
+- Is the baseline appropriate for an accelerator, CPU or system, with comparable scope and metric definitions?
+- Does each claimed difference identify a changed mechanism or resource allocation and its consequence?
+- Are bandwidth direction/aggregation, MAC/FLOP, precision and peak/measured/derived values clear where known?
+- Are benchmark conditions sufficient to interpret results, with local software gains separated from architecture and end-to-end gains?
+- Are addressing, coherence and locality kept distinct? Are logical diagrams kept distinct from physical layouts?
 
 ## Writing
 
-- The causal order is scope → hardware → execution → dynamics → scaling → software → comparison → judgment.
-- Vendor-specific concepts are defined once.
-- Repetition, marketing language and speculative implementation details are removed.
-- Source lineage and uncertainty caveats appear only where they change the conclusion; defensive explanations are removed.
-- “不是……而是……” rhetoric is absent.
-- One sentence is not expanded into a paragraph without added information.
-- Tables remain readable and use consistent terminology.
-- Images are existing sourced diagrams unless generation was explicitly authorized.
+- Does every section add a mechanism, evidence or decision-changing consequence?
+- Are definitions, specifications and judgments maintained in one place, with no glossary padding or repeated defensive prose?
+- Are diagrams sourced, with generation only when explicitly permitted?
+- Are user edits/questions preserved and references placed as requested?

@@ -1,53 +1,48 @@
 ---
 name: ai-chip-architecture-research
-description: Create or rewrite a complete Markdown report for a concrete AI accelerator architecture, covering hardware, execution, GPU differences and evidence-bounded tradeoffs. Use for company-chip surveys, generation-specific architecture reports and accelerator analysis; do not use for paper-only reading notes or generic market summaries.
+description: Create or refine standalone Markdown reports on concrete AI chips and systems, explaining workload bottlenecks, hardware, execution and architectural tradeoffs. Use for vendor or generation-specific accelerator and AI-system CPU research; exclude paper-only reading notes and generic market summaries.
 ---
 
 # AI Chip Architecture Research
 
-Explain why a concrete chip is designed this way, how work and data actually move through it, and what the design gives up. Preserve technical depth while minimizing wording.
+Explain the architecture through one causal chain:
 
-## Establish scope
+**Workload bottleneck → hardware and execution choices → benefit → cost and failure conditions.**
 
-Before research, identify:
+Write for a reader with computer-architecture fundamentals. Preserve mechanisms; remove repetition and details that do not change the conclusion.
 
-- company, chip family, exact generation and current product status;
-- chip, board, multi-chip system and software layers in scope;
-- requested output path or existing document, when supplied.
+## Scope
 
-If only a company is named, select the latest chip with both adequate official documentation and confirmed availability. Accept general availability, direct ordering, customer delivery or named deployment as availability evidence; a launch announcement or future shipping window is insufficient. State ambiguous status and cover a newer announced generation separately.
+Identify the central question, exact chip generation, product status, system layers and output path. For an existing report, read it first and preserve user edits, questions and hypotheses as such.
 
-Never merge generations silently. Reuse an older-generation mechanism only when current documentation confirms continuity or the vendor explicitly describes it as family-wide; label the inherited evidence and keep it out of generation-specific specifications.
+If only a company is named, prefer its latest available chip with adequate architecture documentation. Availability requires ordering, delivery, general availability or named deployment; an announcement or future shipping window is insufficient. Cover a newer announced generation separately. An explicitly requested prototype or legacy chip remains in scope.
 
-## Evidence discipline
+Keep die, package, board, node, rack and software claims distinct. Never merge generations silently. Inherit older mechanisms only with current corroboration or explicit family continuity; label that evidence and do not inherit generation-specific specifications.
 
-Use sources in this order:
+## Research and explain
 
-1. official architecture manuals, specifications and source code;
-2. official product pages, presentations and engineering articles;
-3. patents and papers from the vendor;
-4. independent technical analysis for gaps and criticism.
+Read [references/writing-contract.md](references/writing-contract.md) for the report structure and mechanism questions. Adapt depth and headings to the architecture and user's question.
 
-Trace every nontrivial fact to a source. Separate confirmed facts, derived calculations and evaluation. Label architectural inference explicitly. Omit unsupported implementation guesses and marketing comparisons. Verify current generations and product status live when practical.
+Find where computation and data are placed, when execution advances, and who controls each decision: hardware, compiler, runtime or programmer. Connect these through one sourced execution path. Distinguish fixed placement from fixed timing, runtime data changes from resource rescheduling, and shorter latency from latency hidden by independent work.
 
-Evidence discipline should reduce claims, not produce defensive prose. State confirmed facts directly. Omit uncertain details that do not change the architectural conclusion. When uncertainty matters, qualify the conclusion once or consolidate the gap in the scope, judgment or reference section; do not append source-history explanations and disclaimers throughout the body.
+Compare against the relevant contemporary baseline: GPU for an accelerator, server CPU for a CPU, or a comparable system for a system claim. Explain the changed mechanism and resulting cost; common capabilities alone do not establish an advantage.
 
-Open software does not prove open hardware. A supported operator does not prove efficient execution. Peak throughput does not prove end-to-end performance.
+## Evidence
 
-## Default deliverable
+Prefer architecture manuals, specifications and source code, then official engineering material, vendor papers/patents and independent technical analysis. Check that each source describes the implementation and generation studied; a patent or proposed design does not confirm shipped hardware.
 
-When the user names a company or chip for research, create a complete standalone Markdown architecture report. Do not stop at a memo, outline, evidence map or chat summary unless the user explicitly requests that format.
+Trace every nontrivial fact to a source. Separate documented facts, calculations, architectural inference and evaluation. Keep reconstructions and user hypotheses separate from confirmed hardware. Verify time-sensitive product status and specifications live when practical.
 
-Use the requested path. Otherwise create `<Company or Chip>架构.md` in the current project. In an Obsidian vault, use its established wide-note frontmatter. The report must remain understandable without reading chat history.
+State confirmed facts directly. Omit inconsequential uncertainty; qualify material inference once where it matters. Do not repeat source history or defensive caveats throughout the body.
 
-Read [references/writing-contract.md](references/writing-contract.md) completely and follow it. Adapt section depth to the evidence; keep its causal order.
+Open software does not prove open hardware; operator support does not prove efficient execution; peak throughput or a local optimization does not prove end-to-end architecture gains.
 
-Use existing official diagrams when they materially clarify hierarchy, topology or data flow. Store downloaded assets under the project's established image directory, grouped by company, and use relative Markdown paths. Record the original URL and caption. Generate diagrams only when the user explicitly permits it.
+## Deliver
 
-Preserve existing user edits and local repository rules. Put citations where the user requests; when citations are consolidated at the end, maintain a source map during research so every claim remains traceable.
+For a chip/company research request, create a complete standalone Markdown report, unless the user requests another format. For a short factual question, answer directly. For an existing document, make the requested local edit rather than automatically rewriting the report.
 
-## Validate
+Use the requested path; otherwise create `<Company or Chip>架构.md` in the current project. Follow local repository rules and established Obsidian wide-note frontmatter.
 
-Before delivery, read and apply [references/review-checklist.md](references/review-checklist.md). Report missing evidence as a limitation. Do not fill gaps with confident prose.
+Use official diagrams when they clarify hierarchy, topology or data flow. Store assets in the established image directory, grouped by company, with relative Markdown paths and original URLs/captions. Generate diagrams only with explicit user permission.
 
-For an explicitly short factual question, answer directly from the same evidence rules; do not create a report.
+Put citations where requested; retain claim-to-source traceability when references are consolidated at the end. Before delivery, apply [references/review-checklist.md](references/review-checklist.md).
